@@ -10,10 +10,13 @@ import {
      deleteLinks,
      uploadAvatar,
      follow,
-     unfollow
+     unfollow,
+     isLoggedIn
 
  } from '../controllers/user.controller.js';
+
 import upload from '../middlewares/multer.middleware.js'
+import authenticate from '../middlewares/authentication.middleware.js'
 
 
 
@@ -24,15 +27,16 @@ const router = express.Router();
 // router routes
 router.route("/register").post(registerUser)
 router.route("/login").post(loginUser)
-router.route("/logout").post(logoutUser)
+router.route("/logout").post(authenticate,logoutUser)
 router.route("/getUser").get(getUserProfile)
-router.route("/deleteUser").post(deleteUser)
-router.route("/addLinks").post(addLinks)
-router.route("/updateLinks").post(updateLinks)
-router.route("/deleteLinks").post(deleteLinks)
-router.route("/uploadAvatar").post(upload.single("avatar"),uploadAvatar)
-router.route("/follow").post(follow)
-router.route("/unfollow").post(unfollow)
+router.route("/deleteUser").post(authenticate,deleteUser)
+router.route("/addLinks").post(authenticate,addLinks)
+router.route("/updateLinks").post(authenticate,updateLinks)
+router.route("/deleteLinks").post(authenticate,deleteLinks)
+router.route("/uploadAvatar").post(upload.single("avatar"),authenticate,uploadAvatar)
+router.route("/follow").post(authenticate,follow)
+router.route("/unfollow").post(authenticate,unfollow)
+router.route("/isLoggedIn").get(authenticate,isLoggedIn)
 
 
 export default router

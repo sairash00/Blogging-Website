@@ -1,7 +1,7 @@
 import Post from '../models/post.model.js'
 import User from '../models/user.model.js'
-import {decodeToken} from '../../utils/tokenGenerator.js'
-import {removeFromCloudinary, uploadOnCloudinary } from '../../utils/cloudinary.js'
+import {decodeToken} from '../utils/tokenGenerator.js'
+import {removeFromCloudinary, uploadOnCloudinary } from '../utils/cloudinary.js'
 import fs from 'fs'
 import { isValidObjectId } from 'mongoose'
 
@@ -72,7 +72,6 @@ export const createPost = async (req,res) => {
     })
   }
 }
-
 export const deletePost = async(req,res) => {
 try {
         const token = req.cookies?.accessToken
@@ -139,7 +138,13 @@ export const getPostDetail = async(req,res) => {
         }
         const post = await Post.findById(postId)
         .populate("author","avatar username email links ")
-        // .populate("comments")
+        .populate({
+            path : "comments",
+            populate: {
+                path: "user",
+                select: "username avatar"
+            }
+        })
         // .populate("likes")
 
         if(!post){
@@ -232,7 +237,9 @@ export const unlike = async (req,res) => {
 export const getAllPost = async(req,res) => {
     try {
         
-        const posts = await Post.find().populate("author")
+        const posts = await Post.find()
+        .populate("author","username avatar links ")
+
 
         if(!posts){
             return res.status(404).json({
@@ -248,6 +255,111 @@ export const getAllPost = async(req,res) => {
             posts
         })
 
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+export const followingPost = async(req,res) => {
+    try {
+        
+                const token = req.cookies?.accessToken
+                const decodedToken = decodeToken(token)
+        
+                const user = await User.findById(decodedToken.id).select("following").populate({
+                    path: "following",
+                    populate:{
+                        path: "posts",
+                        model: "Post",
+                        
+                        populate:{
+                            path: "author",
+                            select: "username avatar links"
+                        }
+                    }
+                })
+        
+                console.log(user)
+        
+                if(!user){
+                    return res.status(400).json({
+                        success: false,
+                        message: "User not found"
+                    })
+                }
+        
+                const posts = user.following.flatMap(following => following.posts.map(post => ({
+                    _id: post._id,
+                    title: post.title,
+                    content: post.content,
+                    author: post.author,
+                    likes: post.likes,
+                    createdAt: post.createdAt
+                })));
+        
+                posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+                res.status(200).json({
+                    success: true,
+                    message: "Post fetched successfully",
+                    posts
+                })
+            
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+export const followerPost = async(req,res) => {
+    try {
+        
+                const token = req.cookies?.accessToken
+                const decodedToken = decodeToken(token)
+        
+                const user = await User.findById(decodedToken.id).select("followers").populate({
+                    path: "followers",
+                    populate:{
+                        path: "posts",
+                        model: "Post",
+                        
+                        populate:{
+                            path: "author",
+                            select: "username avatar links"
+                        }
+                    }
+                })
+        
+                console.log(user)
+        
+                if(!user){
+                    return res.status(400).json({
+                        success: false,
+                        message: "User not found"
+                    })
+                }
+        
+                const posts = user.followers.flatMap(follower => follower.posts.map(post => ({
+                    _id: post._id,
+                    title: post.title,
+                    content: post.content,
+                    author: post.author,
+                    likes: post.likes,
+                    createdAt: post.createdAt
+                })));
+        
+                posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+                res.status(200).json({
+                    success: true,
+                    message: "Post fetched successfully",
+                    posts
+                })
+            
     } catch (error) {
         res.status(500).json({
             success: false,

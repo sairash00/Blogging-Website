@@ -1,8 +1,8 @@
 
 import User from '../models/user.model.js'
-import { generateToken, decodeToken } from '../../utils/tokenGenerator.js'
-import { encrypt, compare } from '../../utils/password.js'
-import {uploadOnCloudinary, removeFromCloudinary} from '../../utils/cloudinary.js'
+import { generateToken, decodeToken } from '../utils/tokenGenerator.js'
+import { encrypt, compare } from '../utils/password.js'
+import {uploadOnCloudinary, removeFromCloudinary} from '../utils/cloudinary.js'
 import { isValidObjectId } from 'mongoose'
 
 
@@ -10,7 +10,7 @@ export const registerUser = async(req,res) => {
     try {
 
 
-        const userInfo = req.body
+        const userInfo = req.body?.data
         if(!userInfo || !userInfo.username || !userInfo.password || !userInfo.email || !userInfo.fullName){
             return res.status(400).json({
                 success: false,
@@ -72,7 +72,7 @@ export const registerUser = async(req,res) => {
 export const loginUser = async(req,res) => {
 try {
     
-        const data = req.body
+        const data = req.body.data
     
         if(!data || !data.email || !data.password){
             return res.status(400).json({
@@ -160,6 +160,7 @@ export const getUserProfile = async(req,res) => {
     .populate('following', " username email avatar  ")
     .populate("followers", " username email avatar")
     .populate("posts", "title content images")
+    .populate("comments", "content ")
 
     if(!user){
         res.status(400).json({
@@ -483,6 +484,14 @@ try {
             })
         }
         const user = await User.findById(followedUser).select("followers username followersCount")
+
+        if(user.followers.includes(decodedToken.id)){
+            return res.status(400).json({
+                success: false,
+                message: "Already following"
+            })
+        }
+
         if((!user)){
             return res.status(404).json({
                 success: false,
@@ -577,3 +586,11 @@ export const unfollow = async(req,res) => {
         })
     }
 }
+
+export const isLoggedIn = async (req,res) => {
+    res.status(200).json({
+        success: true,
+        loggedIn: true,
+        message: "User is logged in"
+    })
+} 
