@@ -27,7 +27,9 @@ const FeedsAll = () => {
   },[])
 
   if(loading){
-    return <div className='w-full h-[90vh] flex items-center justify-center ' >Loading...</div>
+    return <div className='w-full h-[90vh] flex items-center justify-center ' >
+      <div className='w-10 h-10 rounded-full border-b-2 animate-spin ' ></div>
+    </div>
   }
   return (
 

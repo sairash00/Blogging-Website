@@ -1,14 +1,23 @@
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import axios from 'axios'
 import { useNavigate, useParams } from 'react-router-dom'
+import isLoggedIn from '../../utils/isLoggedIn'
 
 export default function AddComment({open, setOpen}) {
     const params = useParams()
     const navigate = useNavigate()
     const [data, setData] = useState()
+
+    const checkLogin = async() => {
+      const loggedIn = await isLoggedIn(navigate)
+    }
+    useEffect(() =>{
+      if(open) checkLogin()
+    }  ,[open])
+
     function close(){
         setOpen(false)
     }

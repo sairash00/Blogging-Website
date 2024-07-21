@@ -11,7 +11,6 @@ export const createComment = async(req,res) => {
         const decodedToken = decodeToken(token);
 
         const {content, postId}= req.body
-        console.log(content, postId)
 
         if(!content ||!postId ||!isValidObjectId(postId)){
             return res.status(400).json({
@@ -145,7 +144,10 @@ export const getComments = async(req,res) => {
             path: "comments",
             populate:{
                 path: "user",
-                select: "username avatar links"
+                select: "username avatar links comments",
+                populate:{
+                    path: "comments"
+                }
             }
         })
     

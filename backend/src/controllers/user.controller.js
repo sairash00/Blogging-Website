@@ -156,9 +156,9 @@ export const getUserProfile = async(req,res) => {
     }
 
     const user = await User.findById(decodedToken.id)
-    .select('-password')
+    .select('-password ')
     .populate('following', " username email avatar  ")
-    .populate("followers", " username email avatar")
+    .populate("followers", " username email avatar followers")
     .populate("posts", "title content images")
     .populate("comments", "content ")
 
@@ -588,9 +588,11 @@ export const unfollow = async(req,res) => {
 }
 
 export const isLoggedIn = async (req,res) => {
+    const user = req.user
     res.status(200).json({
         success: true,
         loggedIn: true,
-        message: "User is logged in"
+        message: "User is logged in",
+        user
     })
 } 

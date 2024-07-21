@@ -1,7 +1,6 @@
-
-
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React, { useRef, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import LoadingBar from 'react-top-loading-bar';
 import Home from './components/Home/Home.jsx';
 import Main from './components/Main/Main.jsx';
 import Feed from './components/Feed/Feed.jsx';
@@ -13,19 +12,29 @@ import Profile from './components/userProfile/Profile.jsx';
 import Posts from './components/userProfile/Posts.jsx';
 import Followers from './components/userProfile/Followers.jsx';
 import Following from './components/userProfile/Following.jsx';
-// import Update from './components/userProfile/Update.jsx'
 import OtherUser from './components/userProfile/OtherUser/OtherUser.jsx';
 import DetailedFeed from './components/Feeds.sections/DetailedFeed.jsx';
 import Comments from './components/Feeds.sections/Comments.jsx';
-import Login from './components/registration/Login.jsx'
+import Login from './components/registration/Login.jsx';
 import Register from './components/registration/Register.jsx';
 
-import axios from 'axios'
-axios.defaults.withCredentials = true
+import axios from 'axios';
+axios.defaults.withCredentials = true;
 
 const App = () => {
+  const ref = useRef(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    ref.current.continuousStart(); 
+    setTimeout(() => {
+      ref.current.complete();
+    }, 100); // Adjust the timeout as needed
+  }, [location]);
+
   return (
-    <BrowserRouter>
+    <>
+      <LoadingBar color="#CACED2" ref={ref} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -42,7 +51,6 @@ const App = () => {
             <Route path="/profile/posts" element={<Posts />} />
             <Route path="/profile/following" element={<Following />} />
             <Route path="/profile/followers" element={<Followers />} />
-            {/* <Route path='update' element={<Update />} /> */}
           </Route>
           <Route path='/otherUser/:id' element={<OtherUser />}>
             <Route path="posts" element={<Posts />} />
@@ -52,7 +60,7 @@ const App = () => {
           <Route path='/comment/:id' element={<Comments />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </>
   );
 };
 

@@ -10,13 +10,13 @@ export const createPost = async (req,res) => {
   try {
       const token = req.cookies?.accessToken
       const decodedToken = decodeToken(token)
-  
+    
       const data = req.body
       const image = req.file
 
-  
+
       if(!data || !data.title || !data.content){
-        fs.unlinkSync(image.path)
+          fs.unlinkSync(image.path)
           return res.status(400).json({
               success: false,
               message: 'all fields are required'
@@ -30,21 +30,23 @@ export const createPost = async (req,res) => {
             message: "User not found"
         })
       }
-  
-      const response = await uploadOnCloudinary(image.path)
-      if(!response){
-          return res.status(500).json({
-              success: false,
-              message: "Something went wrong, Try again later"
-          })
-      }
+        let response;
+        if (image?.path) {
+            response = await uploadOnCloudinary(image.path)
+            if(!response){
+                return res.status(500).json({
+                    success: false,
+                    message: "Something went wrong, Try again later"
+                })
+            }
+        }  
   
       const postInfo = {
           title: data.title,
           content: data.content,
           author: user._id,
       }
-  
+      
       const post = await Post.create(postInfo);
       if(!post){
           return res.status(500).json({
@@ -52,12 +54,16 @@ export const createPost = async (req,res) => {
               message: 'Something went wrong, Try again later'
           })
       }
-  
-      post.images.push(response.secure_url);
-      await post.save()
+
+      if (response?.secure_url) {
+        post.images.push(response.secure_url);
+        await post.save()
+      }
+
+
       user.posts.push(post._id);
       await user.save()
-  
+      
       res.status(200).json({
           success: true,
           user,
@@ -282,7 +288,6 @@ export const followingPost = async(req,res) => {
                     }
                 })
         
-                console.log(user)
         
                 if(!user){
                     return res.status(400).json({
@@ -334,7 +339,6 @@ export const followerPost = async(req,res) => {
                     }
                 })
         
-                console.log(user)
         
                 if(!user){
                     return res.status(400).json({

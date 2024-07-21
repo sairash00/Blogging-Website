@@ -6,6 +6,7 @@ import { FaRegComments } from "react-icons/fa";
 import { IoMdArrowBack } from "react-icons/io";
 import { FaFacebook, FaInstagram} from "react-icons/fa";
 import {FaXTwitter} from 'react-icons/fa6'
+import isLoggedIn from '../../utils/isLoggedIn';
 
 
 
@@ -45,6 +46,7 @@ const DetailedFeed = () => {
     
 
      const like = async () => {
+      const loggedIn = await isLoggedIn(navigate)
       try {
         const response = await axios.post(import.meta.env.VITE_LIKEPOST,{id:params.id})
         const data = response.data
@@ -91,25 +93,27 @@ const DetailedFeed = () => {
     (data)
 
     if(loading){
-      return <div className='w-full h-[90vh] flex items-center justify-center ' >Loading...</div>
+      return <div className='w-full h-[90vh] flex items-center justify-center ' >
+      <div className='w-10 h-10 rounded-full border-b-2 animate-spin ' ></div>
+      </div>
     }
   return (
     <div id='maindiv' className="w-[80vw] px-4 py-4 max-sm:w-full flex flex-col gap-5 overflow-y-auto h-[90vh]">
         <button onClick={() => navigate(-1)} className='border w-fit p-1 hover:bg-slate-700 transition-all rounded-full' >
             <IoMdArrowBack className=' text-xl text-[#cfcfcf] ' />
         </button>
-        <p className=' text-[0.8rem] text-[gray] ' >If the image is too small click it to open in new tab</p>
-      <div className="w-full flex  border-b py-10 border-[#314d77] items-center justify-center">
-        <a className='flex justify-center ' href={data.images[0]} target='_blank' >
-            <img
-            className="rounded w-[50%] h-[50%] "
-            src={data.images[0]}
-            alt="Sample Image"
-            />
-        </a>
-      </div>
+        {data.images[0] ? <p className=' text-[0.8rem] text-[gray] ' >If the image is too small click it to open in new tab</p> : null}
+        { data.images[0] ? <div className="w-full flex  border-b py-10 border-[#314d77] items-center justify-center">
+            <a className='flex justify-center ' href={data.images[0]} target='_blank' >
+                <img
+                className="rounded w-[50%] h-[50%] "
+                src={data.images[0]}
+                alt="Sample Image"
+                />
+            </a>
+          </div> : null }
 
-        <div className='flex gap-10 items-center ' >
+        <div className='flex gap-10 mt-5 items-center ' >
             
               <div className='flex  items-center gap-2' >
                   <Link className=' w-10 h-10 overflow-hidden rounded-full border ' >

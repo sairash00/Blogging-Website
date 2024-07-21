@@ -6,6 +6,8 @@ import { MdDeleteOutline, MdDone } from "react-icons/md";
 import { Link, useParams } from 'react-router-dom';
 
 const CommentBox = ({comment, onDelete }) => {
+
+    
     const params = useParams()
 
     const deleteComment = async () =>{
@@ -49,7 +51,7 @@ const CommentBox = ({comment, onDelete }) => {
                   ))
                 }
             </div>
-            <button onClick={deleteComment} > <MdDeleteOutline className=' text-xl text-red-500 hover:text-red-600 transition-all  '  /></button>
+           {/* <button onClick={deleteComment} > <MdDeleteOutline className=' text-xl text-red-500 hover:text-red-600 transition-all  '  /></button> */}
         </div>
 
     </div>
