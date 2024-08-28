@@ -1,0 +1,52 @@
+.homeDiv{
+    width: 100vw;
+    height: 100vh;
+    background-color: #051937;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.centerDiv{
+    width: 50vw;
+    height: 60vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 5vh
+}
+
+.centerDiv div{
+    font-size: 6rem
+}
+
+.centerDiv .Link{
+    border-radius: 10px;
+    border: 1px solid white;
+    padding: 5px 15px;
+    color: whitesmoke;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+.centerDiv .Link:hover {
+    background: whitesmoke;
+    color: #051937;
+    transition: all 0.3s ease-in-out;
+}
+
+@media (max-width: 700px){
+    .centerDiv{
+        width: 100vw;
+    }
+}
+@media (max-width: 420px){
+   .centerDiv div{
+        font-size: 4rem ;
+   }
+   .centerDiv span{
+    font-size: 0.8rem;
+   }
+}
