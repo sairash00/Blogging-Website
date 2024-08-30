@@ -41,6 +41,7 @@ export default function Login() {
         }
         
       } catch (error) {
+        console.log(error)
         if(axios.isAxiosError(error)){
           return setMsg( error.response?.data?.message || "Something went wrong")
         }else{
