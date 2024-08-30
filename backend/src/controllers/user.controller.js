@@ -49,7 +49,6 @@ export const registerUser = async(req,res) => {
         const token = generateToken(data)
         const options = {
             expiresIn: new Date(Date.now() +1000 * 60 * 60 * 12),
-            sameSite: "None",
             secure: true,
             httpOnly: true
         }
@@ -109,7 +108,6 @@ try {
             expiresIn: new Date(Date.now() + 1000 * 60 * 60 * 12),
             httpOnly: true,
             secure: true,
-            sameSite: "None"
         }
     
         const token = generateToken(values)
