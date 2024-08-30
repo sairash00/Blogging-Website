@@ -455,7 +455,7 @@ export const uploadAvatar = async (req,res) => {
             })
         }
     
-        const filepath = file.path
+        const filepath = file.buffer
     
         const token = req.cookies?.accessToken
         const decodedToken = decodeToken(token)
@@ -487,7 +487,7 @@ export const uploadAvatar = async (req,res) => {
              await removeFromCloudinary(user.avatar)
         }
         
-        user.avatar = response.secure_url
+        user.avatar = response
         await user.save()
 
         res.status(200).json({

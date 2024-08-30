@@ -31,8 +31,8 @@ export const createPost = async (req,res) => {
         })
       }
         let response;
-        if (image?.path) {
-            response = await uploadOnCloudinary(image.path)
+        if (image?.buffer) {
+            response = await uploadOnCloudinary(image.buffer)
             if(!response){
                 return res.status(500).json({
                     success: false,
@@ -55,8 +55,8 @@ export const createPost = async (req,res) => {
           })
       }
 
-      if (response?.secure_url) {
-        post.images.push(response.secure_url);
+      if (response) {
+        post.images.push(response);
         await post.save()
       }
 

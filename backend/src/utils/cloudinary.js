@@ -1,51 +1,50 @@
-
-// i wrote the config code in index but its not working.. it is not working for this file and is working for other
-
-import dotenv from 'dotenv';
+import dotenv from 'dotenv'
 dotenv.config()
 
+import  streamifier from 'streamifier';
 import { v2 as cloudinary } from "cloudinary";
-import fs from "fs";
 
-
-cloudinary.config({ 
-    cloud_name: process.env.CLOUDINARY_NAME, 
-    api_key: process.env.API_KEY_CLOUDINARY, 
-    api_secret: process.env.API_SECRET_CLOUDINARY
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.API_KEY_CLOUDINARY,
+  api_secret: process.env.API_SECRET_CLOUDINARY,
 });
 
-export const uploadOnCloudinary = async (filepath) => {
-    try {
-
-            const response = await cloudinary.uploader.upload(filepath, {
-                resource_type: "auto"
-            });
-            fs.unlinkSync(filepath);        
-            return response;
-            
-    } catch (error) {
-        console.error("Error uploading to Cloudinary:", error);
-        return null;
-    }
-}
-
-export const removeFromCloudinary = async(url) => {
+export const uploadOnCloudinary = async (fileBuffer) => {
   try {
+    const stream = streamifier.createReadStream(fileBuffer);
 
-      if(url && !Array.isArray(url)){
-        url = [url]
-      }
+    return new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(result.secure_url); 
+      });
 
-      const deletion = url.map(url => {
-        const publicId = url.split('/').slice(-1)[0].split('.')[0];
-        return cloudinary.uploader.destroy(publicId);
+      stream.pipe(uploadStream);
+    });
+  } catch (error) {
+    console.error('Error uploading to Cloudinary:', error);
+    return null; 
+  }
+};
+
+
+export const removeFromCloudinary = async (url) => {
+  try {
+    if (url && !Array.isArray(url)) {
+      url = [url];
+    }
+    const deletion = url.map((url) => {
+      const publicId = url.split("/").slice(-1)[0].split(".")[0];
+      return cloudinary.uploader.destroy(publicId);
     });
 
-    const response = await Promise.all(deletion)
-    return response
-
+    const response = await Promise.all(deletion);
+    return response;
   } catch (error) {
-    console.error("error while deleting from cloudinary", error)
-    return null
+    console.error("error while deleting from cloudinary", error);
+    return null;
   }
-}
+};
