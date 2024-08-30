@@ -13,7 +13,6 @@ const app = express()
 app.use(cors({
     origin: "https://blogging-website-frontend-swart.vercel.app",
     credentials: true,
-    methods: ["GET", "POST"],
 }))
 app.use(express.json({limit:"10mb"}))
 app.use(urlencoded({limit: "10mb" , extended:true}))
