@@ -36,7 +36,7 @@ const FeedsAll = () => {
     <div id='maindiv' className=' w-[100%] py-10 h-[90%] flex flex-wrap gap-4 overflow-y-auto'>
        
        {
-        posts.map((post)=> (
+        posts?.map((post)=> (
           <FeedsCard key={post._id} post={post} />
         ))
        }
