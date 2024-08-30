@@ -50,6 +50,7 @@ export const registerUser = async(req,res) => {
         const options = {
             expiresIn: new Date(Date.now() +1000 * 60 * 60 * 12),
             secure: true,
+            sameSite: "None",
             httpOnly: true
         }
 
@@ -107,6 +108,7 @@ try {
         const option = {
             expiresIn: new Date(Date.now() + 1000 * 60 * 60 * 12),
             httpOnly: true,
+            sameSite: "None",
             secure: true,
         }
     
