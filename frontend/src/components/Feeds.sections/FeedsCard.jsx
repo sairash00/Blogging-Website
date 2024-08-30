@@ -7,7 +7,7 @@ import { AiOutlineLike } from "react-icons/ai";
 
 const FeedsCard = ({post}) => {
   return (
-    <Link to={`/feeds/${post._id}`} className='w-[45%] hover:border-[#4e71a5] rounded-md px-2 py-2 flex flex-col gap-3 justify-evenly  max-md:w-full min-h-[30vh] border border-[#224271] ' >
+    <Link to={`/feeds/${post._id}`} className='w-[45%] hover:border-[#4e71a5] rounded-md px-2 py-2 flex flex-col gap-3 justify-evenly  max-md:w-full md:h-fit min-h-[30vh] border border-[#224271] ' >
         <h1 className=' text-xl font-bold max-sm:text-[1rem] tracking-wide ' >{post.title || ""} </h1>
         <p className=' text-sm tracking-wide truncate '>{post.content || ""} </p>
         <div className='flex items-center justify-between ' >
